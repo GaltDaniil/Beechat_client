@@ -1,0 +1,24 @@
+.stageHolder {
+    display: flex;
+    flex-direction: column;
+
+    padding: 0 10px;
+    min-width: 240px;
+    max-width: 260px;
+
+    .header {
+        height: 5px;
+
+        margin-bottom: 4px;
+    }
+    .titleAndCount {
+        display: flex;
+
+        .title {
+            font-size: 12px;
+        }
+        .count {
+            font-size: 10px;
+        }
+    }
+}

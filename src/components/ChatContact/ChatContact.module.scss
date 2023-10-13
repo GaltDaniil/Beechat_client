@@ -1,0 +1,87 @@
+.container {
+    position: relative;
+
+    .item {
+        position: relative;
+        padding: 0 10px;
+        cursor: pointer;
+        &:hover {
+            background-color: #e1e8ec;
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+
+            align-items: flex-end;
+            align-self: flex-end;
+            align-content: space-between;
+
+            .newMessages {
+                display: flex;
+                justify-content: center;
+
+                align-items: center;
+                margin-bottom: 10px;
+                width: 16px;
+                height: 16px;
+
+                font-size: 9px;
+                font-weight: 600;
+                color: white;
+
+                border-radius: 50%;
+                background: rgb(121, 168, 255);
+            }
+            .time {
+                font-size: 10px;
+            }
+        }
+        .onlineIcon {
+            position: absolute;
+            left: 35px;
+            bottom: 30%;
+
+            width: 10px;
+            height: 10px;
+
+            border-radius: 50%;
+            background: greenyellow;
+        }
+    }
+    .checked {
+        background: #e1e8ec;
+
+        &::after {
+            content: ' ';
+            position: absolute;
+            background-color: #3385ff;
+            width: 5px;
+            height: 100%;
+            left: 0;
+        }
+    }
+    .deleteBtn {
+        display: flex;
+        position: absolute;
+        justify-content: center;
+
+        right: -10px;
+        top: 0;
+        height: 100%;
+        width: 18px;
+
+        background: rgb(255, 65, 65);
+        color: white;
+        opacity: 0.2;
+        transition: all 0.2s ease-in-out;
+        &:hover {
+            border-radius: 8px 0 0 8px;
+            opacity: 1;
+            width: 25px;
+            right: 0;
+        }
+    }
+}

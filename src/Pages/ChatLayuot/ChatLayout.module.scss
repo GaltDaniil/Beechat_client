@@ -1,0 +1,80 @@
+.title {
+    padding: 10px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: relative;
+
+    .spinnerDiv {
+        height: 100%;
+        width: 100%;
+        background-color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .chatSpace {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+
+        background: #fff;
+        padding: 22px;
+
+        overflow: auto;
+        &::-webkit-scrollbar-width {
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: #c2d7ff;
+            width: 5px;
+        }
+        &::-webkit-scrollbar {
+            width: 5px; /* толщина скроллбара */
+            background-color: rgb(248, 247, 255);
+        }
+        /* &::-webkit-scrollbar {
+           
+            color: aqua;
+        } */
+        .dates {
+            display: flex;
+            justify-content: center;
+            color: rgb(117, 117, 117);
+            font-size: 12px;
+            margin-top: 14px;
+        }
+    }
+    .inputHolder {
+        display: flex;
+        background: #fff;
+        padding: 0 20px 10px 20px;
+
+        background-color: #fff;
+
+        .textArea {
+            padding: 10px 110px 10px 10px;
+        }
+        button {
+            position: absolute;
+            right: 28px;
+            bottom: 20px;
+
+            height: 34px;
+            width: 88px;
+
+            border: none;
+            border-radius: 8px;
+            background-color: #4384f5;
+            color: #fff;
+        }
+    }
+}
+.emptyMessages {
+    background-color: #4384f5;
+    height: 20px;
+    width: 20px;
+}

@@ -1,0 +1,64 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    position: relative;
+
+    margin: 10px 0;
+    padding: 12px 6px 4px 6px;
+
+    width: 100%;
+    min-height: 60px;
+    max-height: 200px;
+    background-color: #fff;
+
+    border-radius: 6px;
+    box-shadow: 0px 0px 10px 1px #e6e6e6;
+
+    .infoHolder {
+        .infoLine {
+            display: flex;
+            align-items: start;
+            margin-bottom: 6px;
+        }
+        p {
+            font-size: 10px;
+            overflow: hidden;
+            max-height: 27 vbnm vbnmpx;
+        }
+        span {
+            font-size: 12px;
+            opacity: 0.5;
+            margin-right: 6px;
+        }
+        .clientHolder {
+            display: flex;
+            padding: 2px 10px;
+            border-radius: 3px;
+
+            background: rgb(241, 241, 241);
+
+            .avatarHolder {
+                height: 15px;
+                width: 15px;
+                background: grey;
+                border-radius: 50%;
+                margin-right: 4px;
+                img {
+                    width: 15px;
+                    height: 15px;
+                    border-radius: 50%;
+                }
+            }
+            p {
+                height: 15px;
+                overflow: hidden;
+            }
+        }
+    }
+    .imgHolder {
+    }
+}
+.dragEnter {
+    translate: 10px;
+}

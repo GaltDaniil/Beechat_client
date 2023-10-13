@@ -1,0 +1,29 @@
+.client {
+    background: rgba(232, 248, 210, 1);
+    margin-right: auto;
+}
+.manager {
+    background: rgba(255, 255, 255, 1);
+    margin-left: auto;
+}
+.messageShape {
+    display: flex;
+    max-width: 240px;
+    padding: 14px 14px;
+    margin-top: 15px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 1px 1px rgb(179, 179, 179);
+
+    .message {
+        .text {
+            font-size: 16px;
+            margin-right: 10px;
+        }
+    }
+    .time {
+        display: flex;
+        align-self: flex-end;
+        font-size: 12px;
+        color: rgb(122, 122, 122);
+    }
+}
