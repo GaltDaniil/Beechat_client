@@ -13,11 +13,11 @@ export interface IPipeline {
 }
 export interface IStage {
     id: number;
-    title: string;
+    stage_title: string;
     created_at: Date;
-    color: string;
+    stage_color: string;
     pipeline_id: number;
-    index: number;
+    stage_index: number;
 }
 export interface IDeal {
     id: number;

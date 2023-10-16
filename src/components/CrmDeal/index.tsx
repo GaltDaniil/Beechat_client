@@ -80,7 +80,7 @@ export const CrmDeal: React.FC<IDealJoin> = (props) => {
                 </div>
                 <div className={styles.infoLine}>
                     <DollarOutlined />
-                    <p>{props.deal_price ? props.deal_price : ''}</p>
+                    <p>{props.deal_price ? props.deal_price : ''} руб</p>
                 </div>
             </div>
             <div className={styles.imgHolder}></div>

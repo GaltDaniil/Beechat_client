@@ -103,7 +103,7 @@ export const accountSlice = createSlice({
         },
         [getStages.fulfilled.type]: (state, action: PayloadAction<IStage[]>) => {
             state.isLoading = false;
-            state.stages = action.payload;
+            state.stages = action.payload.sort((a, b) => a.stage_index - b.stage_index);
             state.error = '';
         },
         [getStages.rejected.type]: (state, action: PayloadAction<string>) => {

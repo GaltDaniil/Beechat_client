@@ -138,9 +138,9 @@ export const CrmStage: React.FC<IStageProps> = (props) => {
                 }}
                 className={styles.stageHolder}
             >
-                <div className={styles.header} style={{ background: `${props.color}` }}></div>
+                <div className={styles.header} style={{ background: `${props.stage_color}` }}></div>
                 <div className={styles.titleAndCount}>
-                    <div className={styles.title}>{props.title}</div>
+                    <div className={styles.title}>{props.stage_title}</div>
                     <div className={styles.count}>{dealCount}</div>
                 </div>
                 <div className={styles.cardSpace}>

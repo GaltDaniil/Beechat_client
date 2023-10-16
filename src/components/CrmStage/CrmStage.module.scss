@@ -3,8 +3,8 @@
     flex-direction: column;
 
     padding: 0 10px;
-    min-width: 240px;
-    max-width: 260px;
+    min-width: 280px;
+    max-width: 280px;
 
     .header {
         height: 5px;
@@ -13,12 +13,14 @@
     }
     .titleAndCount {
         display: flex;
+        align-items: end;
 
         .title {
-            font-size: 12px;
+            font-size: 14px;
+            margin-right: 4px;
         }
         .count {
-            font-size: 10px;
+            font-size: 12px;
         }
     }
 }
