@@ -38,7 +38,7 @@ export const ChatContact: React.FC<IProps> = (props) => {
                         ? `${styles.item} ${styles.checked}`
                         : styles.item
                 }
-                style={{ padding: '12px 10px' }}
+                style={{ padding: '14px 10px' }}
                 key={props.id}
                 onClick={() => {
                     changeChatId();
@@ -52,13 +52,13 @@ export const ChatContact: React.FC<IProps> = (props) => {
                         />
                     }
                     title={
-                        <a style={{ fontSize: '12px', transition: 'none' }}>
+                        <a className={styles.name}>
                             {props.from_messenger === 'beeChat' && !props.client_name
                                 ? 'Онлайн чат'
                                 : props.client_name || props.client_custom_fields.tg_name}
                         </a>
                     }
-                    description={props.last_message}
+                    description={<div className={styles.description}>{props.last_message}</div>}
                 />
                 {/* <div className={styles.onlineIcon}></div> */}
                 <div className={styles.info}>

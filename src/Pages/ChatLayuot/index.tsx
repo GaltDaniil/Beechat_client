@@ -205,7 +205,9 @@ export const ChatLayuot = () => {
                     <Content>
                         <div className={styles.content}>
                             <div className={styles.chatSpace} ref={refDivMessagesSpace}>
-                                {!isLoading ? (
+                                {!messages ? (
+                                    <div>123</div>
+                                ) : !isLoading ? (
                                     sortMessagesByDays().map((el, index) => {
                                         if (el.type === 'date') {
                                             return (
@@ -228,6 +230,29 @@ export const ChatLayuot = () => {
                                 ) : (
                                     <Spinner />
                                 )}
+                                {/* {!isLoading ? (
+                                    sortMessagesByDays().map((el, index) => {
+                                        if (el.type === 'date') {
+                                            return (
+                                                <div key={index} className={styles.dates}>
+                                                    {el.date === new Date().toLocaleDateString()
+                                                        ? 'Сегодня'
+                                                        : el.date}
+                                                </div>
+                                            );
+                                        }
+                                        return (
+                                            <ChatAdminMessage
+                                                key={index}
+                                                {...el}
+                                                client_name={currentChat!.client_name!}
+                                                from_messenger={currentChat!.from_messenger}
+                                            />
+                                        );
+                                    })
+                                ) : (
+                                    <Spinner />
+                                )} */}
                             </div>
 
                             <div className={styles.inputHolder}>

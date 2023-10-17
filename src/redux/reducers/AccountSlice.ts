@@ -70,6 +70,16 @@ export const accountSlice = createSlice({
             });
             state.deals = withChangedDeal.sort((a, b) => a.deal_order + b.deal_order);
         },
+        changeManyDealOrders(state, action) {
+            const withChangedDeal = state.deals.map((deal) => {
+                if (deal.id === action.payload.id) {
+                    deal.deal_order = action.payload.deal_order;
+                    return deal;
+                }
+                return deal;
+            });
+            state.deals = withChangedDeal.sort((a, b) => a.deal_order + b.deal_order);
+        },
     },
     extraReducers: {
         [getAccount.pending.type]: (state, action: PayloadAction<IAccount>) => {
@@ -127,4 +137,5 @@ export const accountSlice = createSlice({
 });
 
 export default accountSlice.reducer;
-export const { changeStage, changeDealOrder, sortStage } = accountSlice.actions;
+export const { changeStage, changeDealOrder, sortStage, changeManyDealOrders } =
+    accountSlice.actions;

@@ -1,5 +1,21 @@
 .container {
     position: relative;
+    max-height: 80px;
+    overflow: hidden;
+    border-bottom: 1px rgb(214, 214, 214) solid;
+
+    .name {
+        font-size: 13px;
+        transition: none;
+    }
+
+    .description {
+        font-size: 13px;
+        overflow: hidden;
+        line-height: 1.2;
+        max-height: 30px;
+        margin-right: 5px;
+    }
 
     .item {
         position: relative;
@@ -37,6 +53,7 @@
             }
             .time {
                 font-size: 10px;
+                opacity: 0.8;
             }
         }
         .onlineIcon {
