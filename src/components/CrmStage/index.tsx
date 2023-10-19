@@ -5,7 +5,7 @@ import { IStage, IDealJoin } from '../../types';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { CrmDeal } from '../CrmDeal';
 import {
-    changeDealOrder,
+    changeDealPosition,
     changeStage,
     sortStage,
     updateDeal,
@@ -42,73 +42,67 @@ export const CrmStage: React.FC<IStageProps> = (props) => {
                 (deal) => deal.id === targetDeal.id,
             );
             const previousDeal = currentStageDeals[targetDealIndex - 1];
-            console.log('карточка перетаскиваемая', props.currentDeal.deal_order);
-            console.log('карточка на которую наводим', targetDeal.deal_order);
-            console.log('карточка которая должна быть выше', previousDeal?.deal_order);
+            const nextDeal = currentStageDeals[targetDealIndex + 1];
+            console.log('карточка перетаскиваемая', props.currentDeal.deal_position);
+            console.log('карточка на которую наводим', targetDeal.deal_position);
+            console.log('карточка которая должна быть выше', previousDeal?.deal_position);
+            console.log('карточка которая должна быть ниже', previousDeal?.deal_position);
             console.log(currentStageDeals.length);
 
-            let newOrder = 0;
+            let newPosition = 0;
 
-            if (!previousDeal && props.currentDeal.deal_order === targetDeal.deal_order) {
-                console.log('верхний элемент и та же карточка');
-            } else if (!previousDeal) {
+            //Если та же карточка
+            if (props.currentDeal.id === targetDeal.id) {
+                console.log('та же карточка, ничего не делаем');
+            }
+            //Нет карточки сверху
+            else if (!previousDeal) {
                 console.log('верхний элемент');
-                if (props.currentDeal.deal_order > targetDeal.deal_order) {
-                    console.log('просто дропаем');
+
+                if (props.currentDeal.deal_position > targetDeal.deal_position) {
+                    console.log('просто дропаем и обновляем');
                     dispatch(sortStage());
                 } else {
-                    const reverseDeals = deals.slice().reverse();
-                    console.log('reverseDeals', reverseDeals);
-                    let closestOrder = 0;
-                    for (let i = 0; i < reverseDeals.length; i++) {
-                        if (reverseDeals[i].deal_order > targetDeal.deal_order) {
-                            closestOrder = reverseDeals[i].deal_order;
-                            break;
-                        }
-                    }
-                    console.log('наибольшее близкое число', closestOrder);
-                    if (closestOrder && closestOrder - targetDeal.deal_order >= 1000) {
-                        newOrder = targetDeal.deal_order + 500;
-                    } else if (closestOrder && closestOrder - targetDeal.deal_order < 1000) {
-                        newOrder = Math.round(
-                            targetDeal.deal_order + (closestOrder - targetDeal.deal_order) / 2,
-                        );
-                        console.log('Если есть чисто больше', newOrder);
-                    } else if (closestOrder === 0) {
-                        newOrder = targetDeal.deal_order + 500;
-                        console.log('Если это максимальное', newOrder);
-                    }
-                }
-            } else if (props.currentDeal.deal_order === targetDeal.deal_order) {
-                console.log('та же карточка');
-            } else if (
-                props.currentDeal.deal_order > targetDeal.deal_order &&
-                props.currentDeal.deal_order < previousDeal.deal_order
-            ) {
-                console.log('просто дропаем');
-                dispatch(sortStage());
-            } else {
-                if (previousDeal.deal_order - targetDeal.deal_order >= 1000) {
-                    console.log('разница больше или равно 1000');
-                    newOrder = targetDeal.deal_order + 500;
-                    const isAlreadyHaveOrder = deals.filter((deal) => deal.deal_order === newOrder);
-                    if (isAlreadyHaveOrder) {
-                        newOrder = targetDeal.deal_order + 248;
-                    }
-                } else if (previousDeal.deal_order - targetDeal.deal_order < 1000) {
-                    console.log('разница менее 1000');
-                    newOrder = Math.round(
-                        targetDeal.deal_order +
-                            (previousDeal.deal_order - targetDeal.deal_order) / 2,
-                    );
-                    console.log(previousDeal.deal_order, '-', targetDeal.deal_order, '/', 2);
+                    newPosition = targetDeal.deal_position + 32_766;
                 }
             }
-            if (newOrder) {
-                console.log('отправляем на сервер новый order', newOrder);
-                const params = { id: props.currentDeal.id, deal_order: newOrder };
+            //Нет карточки снизу
+            else if (!nextDeal) {
+                console.log('нижний элемент');
+
+                if (props.currentDeal.deal_position < targetDeal.deal_position) {
+                    console.log('просто дропаем и обновляем');
+                    dispatch(sortStage());
+                } else {
+                    newPosition = targetDeal.deal_position - 32_766;
+                }
+            }
+            //Значение можно не менять
+            else if (
+                props.currentDeal.deal_position > targetDeal.deal_position &&
+                props.currentDeal.deal_position < previousDeal.deal_position
+            ) {
+                console.log('просто дропаем и обновляем');
+                dispatch(sortStage());
+            }
+            //Карточка перемещается с верхней позиции
+            else if (props.currentDeal.deal_position > targetDeal.deal_position) {
+                newPosition =
+                    nextDeal.deal_position +
+                    (targetDeal.deal_position - nextDeal.deal_position) / 2;
+            }
+            //Карточка перемещается с нижней позиции
+            else {
+                newPosition = Math.round(
+                    targetDeal.deal_position +
+                        (previousDeal.deal_position - targetDeal.deal_position) / 2,
+                );
+            }
+            if (newPosition) {
+                console.log('отправляем на сервер новый Position', newPosition);
+                const params = { id: props.currentDeal.id, deal_position: newPosition };
                 dispatch(updateDeal(params));
-                dispatch(changeDealOrder(params));
+                dispatch(changeDealPosition(params));
                 dispatch(sortStage());
             }
         }

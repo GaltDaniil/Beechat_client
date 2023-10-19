@@ -53,32 +53,35 @@ export const accountSlice = createSlice({
                 }
                 return deal;
             });
-            state.deals = withChangedDeal.sort((a, b) => a.deal_order + b.deal_order);
+            state.deals = withChangedDeal.sort((a, b) => a.deal_position + b.deal_position);
         },
+        /* .sort((a, b) => a.deal_position + b.deal_position); */
         sortStage(state) {
             console.log('stage обновлен');
-            const withChangedDeal = state.deals.sort((a, b) => a.deal_order + b.deal_order);
+            const withChangedDeal = state.deals.sort((a, b) => b.deal_position - a.deal_position);
             state.deals = withChangedDeal;
         },
-        changeDealOrder(state, action) {
-            const withChangedDeal = state.deals.map((deal) => {
-                if (deal.id === action.payload.id) {
-                    deal.deal_order = action.payload.deal_order;
+        changeDealPosition(state, action) {
+            const withChangedDeal = state.deals
+                .map((deal) => {
+                    if (deal.id === action.payload.id) {
+                        deal.deal_position = action.payload.deal_position;
+                        return deal;
+                    }
                     return deal;
-                }
-                return deal;
-            });
-            state.deals = withChangedDeal.sort((a, b) => a.deal_order + b.deal_order);
+                })
+                .sort((a, b) => b.deal_position - a.deal_position);
+            state.deals = withChangedDeal;
         },
-        changeManyDealOrders(state, action) {
+        changeManyDealPosition(state, action) {
             const withChangedDeal = state.deals.map((deal) => {
                 if (deal.id === action.payload.id) {
-                    deal.deal_order = action.payload.deal_order;
+                    deal.deal_position = action.payload.deal_position;
                     return deal;
                 }
                 return deal;
             });
-            state.deals = withChangedDeal.sort((a, b) => a.deal_order + b.deal_order);
+            state.deals = withChangedDeal;
         },
     },
     extraReducers: {
@@ -126,7 +129,7 @@ export const accountSlice = createSlice({
         },
         [getDeals.fulfilled.type]: (state, action: PayloadAction<IDealJoin[]>) => {
             state.isLoading = false;
-            state.deals = action.payload.sort((a, b) => a.deal_order - b.deal_order).reverse();
+            state.deals = action.payload.sort((a, b) => b.deal_position - a.deal_position);
             state.error = '';
         },
         [getDeals.rejected.type]: (state, action: PayloadAction<string>) => {
@@ -137,5 +140,5 @@ export const accountSlice = createSlice({
 });
 
 export default accountSlice.reducer;
-export const { changeStage, changeDealOrder, sortStage, changeManyDealOrders } =
+export const { changeStage, changeDealPosition, sortStage, changeManyDealPosition } =
     accountSlice.actions;

@@ -28,7 +28,7 @@ export interface IDeal {
     client_id: number;
     tag_id: number;
     deal_custom_fields: object;
-    deal_order: number;
+    deal_position: number;
     created_at: Date;
 }
 
