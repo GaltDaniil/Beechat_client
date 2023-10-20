@@ -12,7 +12,7 @@ interface IChatAdminMessageProps {
     from_client: boolean;
     is_readed: boolean;
     client_name: string;
-    from_messenger: string;
+    chat_type: string;
 }
 
 export const ChatAdminMessage: React.FC<IChatAdminMessageProps> = (props) => {
@@ -26,7 +26,7 @@ export const ChatAdminMessage: React.FC<IChatAdminMessageProps> = (props) => {
         >
             <div className={styles.message}>
                 <div className={styles.name}>
-                    {props.from_client && props.from_messenger === 'beeChat'
+                    {props.from_client && props.chat_type === 'beeChat'
                         ? 'Онлайн чат'
                         : props.client_name && props.from_client
                         ? props.client_name

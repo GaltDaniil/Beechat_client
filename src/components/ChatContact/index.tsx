@@ -48,12 +48,12 @@ export const ChatContact: React.FC<IProps> = (props) => {
                     avatar={
                         <Avatar
                             style={{ width: '52px', height: '52px' }}
-                            src={`https://beechat.ru/${props.avatar}`}
+                            src={`https://beechat.ru/${props.chat_avatar}`}
                         />
                     }
                     title={
                         <a className={styles.name}>
-                            {props.from_messenger === 'beeChat' && !props.client_name
+                            {props.chat_type === 'beeChat' && !props.client_name
                                 ? 'Онлайн чат'
                                 : props.client_name || props.client_custom_fields.tg_name}
                         </a>

@@ -17,7 +17,7 @@ export const BeeChat: React.FC = () => {
 
     /*     const [isOpenChat, setIsOpenChat] = React.useState(false);
     const [isOpenMessengers, setIsOpenMessengers] = React.useState(false); */
-    const [chat_id, setChatId] = React.useState('');
+    const [chat_id, setChatId] = React.useState<number | null>(null);
     const [messages, setMessages] = React.useState<IMessage[]>([]);
 
     const [infoShapeIsActive, setInfoShapeIsActive] = React.useState(true);
@@ -40,19 +40,14 @@ export const BeeChat: React.FC = () => {
 
         const loadingChat = async () => {
             let localStorageBeeChatId: string | null = window.localStorage.getItem('beechat');
-            let newBeeChatId;
             if (localStorageBeeChatId) {
-                setChatId((pred) => localStorageBeeChatId!);
-                newBeeChatId = Number(localStorageBeeChatId);
-                const resultFromChat = await axios.get(`/chats/${localStorageBeeChatId}`);
-                //@ts-ignore
-                if (resultFromChat.data.client_id) setInfoShapeIsActive(false);
-                const resultFromMessages = await axios.get(
-                    `/messages?chat_id=${resultFromChat.data.id}`,
-                );
+                const { data } = await axios.get(`/chats/${localStorageBeeChatId}`);
+                setChatId((prev) => data.id);
 
-                setMessages((prev) => resultFromMessages.data.sort());
-                socket.emit('join', { chat_id: newBeeChatId });
+                if (data.client_id) setInfoShapeIsActive(false);
+                const getMessages = await axios.get(`/messages?chat_id=${data.id}`);
+                setMessages((prev) => getMessages.data.sort());
+                socket.emit('join', { chat_id: Number(data.id) });
             }
         };
         loadingChat();
@@ -93,12 +88,13 @@ export const BeeChat: React.FC = () => {
     };
     const sendMessage = async () => {
         if (!chat_id) {
+            const messenger_id = Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 1000000;
+            window.localStorage.setItem('beechat', messenger_id.toString());
             const resultFromChat = await axios.post('/chats', {
                 account_id,
-                from_messenger: 'beeChat',
+                messenger_id,
+                chat_type: 'beeChat',
             });
-            console.log(resultFromChat.data.id);
-            window.localStorage.setItem('beechat', resultFromChat.data.id);
             setChatId((pred) => resultFromChat.data.id);
 
             socket.emit('join', { chat_id: resultFromChat.data.id });
@@ -108,13 +104,12 @@ export const BeeChat: React.FC = () => {
                 text,
                 from_client: true,
             });
-            console.log(resultFromMessage.data);
             setMessages((pred) => [...pred, resultFromMessage.data]);
             socket.emit('sendMessage', resultFromMessage.data);
             setText((prev) => '');
         } else {
             const { data } = await axios.post('/messages', {
-                chat_id: Number(chat_id),
+                chat_id,
                 text,
                 from_client: true,
             });
@@ -148,7 +143,7 @@ export const BeeChat: React.FC = () => {
         await axios.post('/clients/create-from-chat', {
             account_id,
             chat_id,
-            from_messenger: 'beechat',
+            chat_type: 'beechat',
             name,
             phone,
             description,

@@ -11,7 +11,7 @@ interface IClientInfoProps {
     update_at?: Date;
     avatar?: string;
     fromUrl?: string;
-    from_messenger?: string;
+    chat_type?: string;
     client_id: number;
     client_name?: string;
     client_phone: string;

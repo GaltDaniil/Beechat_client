@@ -71,7 +71,8 @@ export const ChatLayuot = () => {
                 chat_id: currentChat.id,
                 text,
                 from_client: false,
-                telegram_id: currentChat!.telegram_id,
+                chat_type: currentChat.chat_type,
+                messenger_id: currentChat.messenger_id,
             });
             socket.emit('sendMessage', data);
             setText((prev) => '');
@@ -117,7 +118,7 @@ export const ChatLayuot = () => {
             console.log(tgMessageData);
             console.log(currentChat);
             if (tgMessageData && currentChat) {
-                if (currentChat.id === tgMessageData.chat_id) {
+                if (currentChat.messenger_id === tgMessageData.id) {
                     console.log(tgMessageData);
                     //@ts-ignore
                     dispatch(readOneMessages(tgMessageData.id));
@@ -140,7 +141,7 @@ export const ChatLayuot = () => {
         //setIsLoading(true);
         if (currentChat) {
             dispatch(getAndReadMessages(currentChat.id));
-            socket.emit('join', { chat_id: currentChat.id });
+            socket.emit('join', { messenger_id: currentChat.id });
             dispatch(getChats());
             //setIsLoading(false);
         }
@@ -223,7 +224,7 @@ export const ChatLayuot = () => {
                                                 key={index}
                                                 {...el}
                                                 client_name={currentChat!.client_name!}
-                                                from_messenger={currentChat!.from_messenger}
+                                                chat_type={currentChat!.chat_type}
                                             />
                                         );
                                     })
@@ -246,7 +247,7 @@ export const ChatLayuot = () => {
                                                 key={index}
                                                 {...el}
                                                 client_name={currentChat!.client_name!}
-                                                from_messenger={currentChat!.from_messenger}
+                                                chat_type={currentChat!.chat_type}
                                             />
                                         );
                                     })

@@ -28,7 +28,7 @@ export const WidgetButtons = () => {
             if (!localStorageBeeChatId && account_id) {
                 const { data } = await axios.post('/chats', {
                     account_id,
-                    from_messenger: 'beeChat',
+                    chat_type: 'beeChat',
                 });
                 window.localStorage.setItem('beechat', data.id);
             } else {
