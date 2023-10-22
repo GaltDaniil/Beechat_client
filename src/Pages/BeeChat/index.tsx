@@ -105,6 +105,7 @@ export const BeeChat: React.FC = () => {
             const resultFromChat = await axios.post('/chats', {
                 account_id,
                 messenger_id,
+                from_url: fromUrl,
                 chat_type: 'beeChat',
             });
             setChatId((pred) => resultFromChat.data.id);

@@ -6,7 +6,8 @@ import moment from 'moment';
 import 'moment/locale/ru';
 import { IChatResponse } from '../../types';
 import { useAppDispatch } from '../../hooks/redux';
-import { setCurrentChat } from '../../redux/reducers/ChatSlice';
+import { hideChat, setCurrentChat } from '../../redux/reducers/ChatSlice';
+import { CloseOutlined } from '@ant-design/icons';
 //import { CloseOutlined } from '@ant-design/icons';
 
 interface IProps extends IChatResponse {
@@ -21,14 +22,13 @@ export const ChatContact: React.FC<IProps> = (props) => {
 
     const changeChatId = () => {
         //@ts-ignore
-        //props.setActiveChatId((pred) => props.id);
+        props.setActiveChatId((pred) => props.id);
         dispatch(setCurrentChat(props.id));
     };
-    /*  const deleteThisChat = () => {
+    const hideThisChat = () => {
         console.log('клик по делит');
-        dispatch(deleteChat(props.id));
-        dispatch(getChats());
-    }; */
+        dispatch(hideChat({ chat_id: props.id }));
+    };
 
     return (
         <div className={styles.container}>
@@ -72,14 +72,14 @@ export const ChatContact: React.FC<IProps> = (props) => {
                     </div>
                 </div>
             </List.Item>
-            {/* <div
+            <div
                 onClick={() => {
-                    deleteThisChat();
+                    hideThisChat();
                 }}
                 className={styles.deleteBtn}
             >
                 <CloseOutlined />
-            </div> */}
+            </div>
         </div>
     );
 };

@@ -6,7 +6,6 @@ interface ChatState {
     chats: IChatResponse[];
     isLoading: boolean;
     currentChat: IChatResponse | null;
-    beechatIsOpen: boolean;
     error: string;
 }
 
@@ -14,7 +13,6 @@ const initialState: ChatState = {
     chats: [],
     isLoading: false,
     currentChat: null,
-    beechatIsOpen: false,
     error: '',
 };
 
@@ -38,6 +36,11 @@ export const deleteChat = createAsyncThunk('chats/deleteChat', async (params: an
     return data;
 });
 
+export const hideChat = createAsyncThunk('chats/hideChat', async (params: any) => {
+    const { data } = await axios.patch(`/chats/`);
+    return data;
+});
+
 export const chatSlice = createSlice({
     name: 'chat',
     initialState,
@@ -49,10 +52,6 @@ export const chatSlice = createSlice({
             } else {
                 state.currentChat = null;
             }
-        },
-        openOrCloseOnlineChat(state) {
-            console.log('смена статуса в слайсе');
-            state.beechatIsOpen = !state.beechatIsOpen;
         },
     },
     extraReducers: {
@@ -85,4 +84,4 @@ export const chatSlice = createSlice({
 });
 
 export default chatSlice.reducer;
-export const { setCurrentChat, openOrCloseOnlineChat } = chatSlice.actions;
+export const { setCurrentChat } = chatSlice.actions;

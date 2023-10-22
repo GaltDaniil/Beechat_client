@@ -10,7 +10,7 @@ interface IClientInfoProps {
     created_at?: Date;
     update_at?: Date;
     avatar?: string;
-    fromUrl?: string;
+    from_url?: string;
     chat_type?: string;
     client_id: number;
     client_name?: string;
@@ -26,21 +26,25 @@ export const ClientInfoSider: React.FC<IClientInfoProps> = (props) => {
         <div className={styles.content}>
             <h4>Информация о клиенте</h4>
             <div className={styles.clientInfo}>
-                <span>Имя</span>
+                <span>Имя:</span>
                 <p>{props.client_name || 'Не передано'}</p>
-                <span>Телефон</span>
+                <span>Телефон:</span>
                 <p>{props.client_phone || 'Не передано'}</p>
-                <span>Email</span>
+                <span>Email:</span>
                 <p>{props.client_email || 'Не передано'}</p>
-                <span>Источник</span>
+                <span>Источник чата:</span>
+                <p>{props.from_url || 'Не передано'}</p>
+                <span>Ссылки:</span>
                 <p>неизвестно</p>
-                <span>Ссылки</span>
-                <p>неизвестно</p>
-                <span>Описание</span>
+                <span>Описание:</span>
                 <p>
                     {props.client_custom_fields ? props.client_custom_fields.chat_description : ''}
                 </p>
             </div>
+            {/* <h4>Информация из GetCourse</h4>
+            <div className={styles.clientInfo}>
+                <span>Ссылка на пользователя в GC:</span>
+            </div> */}
         </div>
     );
 };

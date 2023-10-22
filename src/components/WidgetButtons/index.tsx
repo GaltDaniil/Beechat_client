@@ -1,14 +1,10 @@
 import React from 'react';
 //@ts-ignore
 import styles from './WidgetButtons.module.scss';
-import { useAppDispatch } from '../../hooks/redux';
-import { openOrCloseOnlineChat } from '../../redux/reducers/ChatSlice';
 //import { useAppDispatch } from '../../hooks/redux';
 //import axios from '../../axios';
 
 export const WidgetButtons = () => {
-    const dispatch = useAppDispatch();
-
     const urlParams = new URLSearchParams(window.location.search);
     const account_id = urlParams.get('accountId');
 
@@ -33,7 +29,6 @@ export const WidgetButtons = () => {
     const sendMessageFromIframe = () => {
         window.parent.postMessage(messageToParent, '*');
         console.log('click');
-        dispatch(openOrCloseOnlineChat());
     };
 
     /* React.useEffect(() => {
@@ -62,7 +57,7 @@ export const WidgetButtons = () => {
     }, []); */
 
     return (
-        <div className={styles.buttomsContainer}>
+        <div className={styles.buttonsContainer}>
             <div className={styles.telegram}>
                 <a
                     target="_blank"
