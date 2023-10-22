@@ -1,13 +1,16 @@
 import React from 'react';
 //@ts-ignore
 import styles from './WidgetButtons.module.scss';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { openOrCloseOnlineChat } from '../../redux/reducers/ChatSlice';
 //import { useAppDispatch } from '../../hooks/redux';
 //import axios from '../../axios';
 
 export const WidgetButtons = () => {
-    //const dispatch = useAppDispatch();
+    const dispatch = useAppDispatch();
 
-    //const [chat_id, setChat_id] = React.useState('');
+    const isOpenChat = useAppSelector((state) => state.chatReducer.beechatIsOpen);
+    console.log('isOpenChat в виджетах', isOpenChat);
 
     const urlParams = new URLSearchParams(window.location.search);
     const account_id = urlParams.get('accountId');
@@ -19,6 +22,8 @@ export const WidgetButtons = () => {
     // Отправляем сообщение родительскому документу
     const sendMessageFromIframe = () => {
         window.parent.postMessage(messageToParent, '*');
+        console.log('click');
+        dispatch(openOrCloseOnlineChat());
     };
 
     /* React.useEffect(() => {

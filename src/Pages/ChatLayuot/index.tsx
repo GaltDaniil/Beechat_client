@@ -66,7 +66,7 @@ export const ChatLayuot = () => {
     };
 
     const sendMessage = async () => {
-        if (currentChat) {
+        if (currentChat && text) {
             const { data } = await axios.post('/messages', {
                 chat_id: currentChat.id,
                 text,
@@ -141,7 +141,7 @@ export const ChatLayuot = () => {
         //setIsLoading(true);
         if (currentChat) {
             dispatch(getAndReadMessages(currentChat.id));
-            socket.emit('join', { messenger_id: currentChat.id });
+            socket.emit('join', { chat_id: currentChat.id });
             dispatch(getChats());
             //setIsLoading(false);
         }

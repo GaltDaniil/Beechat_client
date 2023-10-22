@@ -13,11 +13,12 @@ import { IMessage } from '../../types';
 const { TextArea } = Input;
 
 export const BeeChat: React.FC = () => {
+    const [isChatOpen, setIsChatOpen] = React.useState(false);
+
     const [text, setText] = React.useState('');
 
-    /*     const [isOpenChat, setIsOpenChat] = React.useState(false);
-    const [isOpenMessengers, setIsOpenMessengers] = React.useState(false); */
     const [chat_id, setChatId] = React.useState<number | null>(null);
+
     const [messages, setMessages] = React.useState<IMessage[]>([]);
 
     const [infoShapeIsActive, setInfoShapeIsActive] = React.useState(true);
@@ -25,36 +26,26 @@ export const BeeChat: React.FC = () => {
     const [name, setName] = React.useState('');
     const [phone, setPhone] = React.useState('');
     const [description, setDescription] = React.useState('');
-    //const [fromUrl, setFromUrl] = React.useState('');
+    const [fromUrl, setFromUrl] = React.useState('');
 
     const contentDivRef = React.useRef(null);
+
     const urlParams = new URLSearchParams(window.location.search);
     const account_id = urlParams.get('accountId');
-
-    console.log('а это тоже видно?');
 
     React.useEffect(() => {
         socket.on('newMessage', (data: IMessage) => {
             if (!data.from_client) setMessages((pred) => [...pred, data]);
         });
-
-        const loadingChat = async () => {
-            let localStorageBeeChatId: string | null = window.localStorage.getItem('beechat');
-            if (localStorageBeeChatId) {
-                const { data } = await axios.get(`/chats/${localStorageBeeChatId}`);
-                setChatId((prev) => data.id);
-
-                if (data.client_id) setInfoShapeIsActive(false);
-                const getMessages = await axios.get(`/messages?chat_id=${data.id}`);
-                setMessages((prev) => getMessages.data.sort());
-                socket.emit('join', { chat_id: Number(data.id) });
+        window.addEventListener('message', (event: MessageEvent<any>) => {
+            console.log(event);
+            console.log(event.data);
+            if (event.data.action === 'showLiveChat') {
+                setIsChatOpen((prev) => true);
+                const location = event.data.location as string;
+                setFromUrl((prev) => location);
             }
-        };
-        loadingChat();
-
-        return () => {
-            socket.disconnect();
-        };
+        });
     }, []);
 
     React.useEffect(() => {
@@ -63,6 +54,27 @@ export const BeeChat: React.FC = () => {
             contentDivRef.current.scrollTop = contentDivRef.current.scrollHeight;
         }
     }, [messages]);
+
+    //Срабатывает только если чат открывается. Проверяет в localstoeage наличие message_id
+    React.useEffect(() => {
+        console.log('запустилась загрузка чатов при открытии');
+        if (isChatOpen) {
+            const loadingChat = async () => {
+                let localStorageBeeChatId: string | null = window.localStorage.getItem('beechat');
+                if (localStorageBeeChatId) {
+                    const { data } = await axios.get(`/chats/${localStorageBeeChatId}`);
+                    setChatId((prev) => data.id);
+
+                    if (data.client_id) setInfoShapeIsActive(false);
+                    const getMessages = await axios.get(`/messages?chat_id=${data.id}`);
+                    setMessages((prev) => getMessages.data.sort());
+                    console.log('Запустился Join');
+                    socket.emit('join', { chat_id: Number(data.id) });
+                }
+            };
+            loadingChat();
+        }
+    }, [isChatOpen]);
 
     const sortMessagesByDays = () => {
         const messagesByDay: any[] = [];
@@ -96,7 +108,7 @@ export const BeeChat: React.FC = () => {
                 chat_type: 'beeChat',
             });
             setChatId((pred) => resultFromChat.data.id);
-
+            console.log('Запустился Join');
             socket.emit('join', { chat_id: resultFromChat.data.id });
 
             const resultFromMessage = await axios.post('/messages', {
@@ -128,16 +140,6 @@ export const BeeChat: React.FC = () => {
     const closeLiveChat = () => {
         window.parent.postMessage({ action: 'hideLiveChat' }, '*');
     };
-
-    /* const openWidgets = () => {
-        setIsOpenChat((pred) => false);
-        setIsOpenMessengers((pred) => true);
-    }; */
-
-    /* const closeAll = () => {
-        setIsOpenChat((pred) => false);
-        setIsOpenMessengers((pred) => false);
-    }; */
 
     const sendLeadInfo = async () => {
         await axios.post('/clients/create-from-chat', {

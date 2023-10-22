@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const closeWidgetsBtn = document.getElementById('bee-close-widgets-button');
     const buttonsIframes = document.getElementById('buttons-iframe');
     const liveChatDiv = document.getElementById('bee-livechat');
+    const iframeDiv = document.getElementById('livechat-iframe');
 
     mainBtn.addEventListener('click', () => {
         mainBtn.classList.add('bee_hidden');
@@ -31,6 +32,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (message.action === 'showLiveChat') {
             buttonsIframes.style.height = '0px';
             liveChatDiv.classList.remove('bee_hidden');
+            console.log('отработало до');
+            iframeDiv.contentWindow.postMessage(
+                { action: 'showLiveChat', location: window.location.href },
+                '*',
+            );
+            console.log('и после');
         }
         if (message.action === 'hideLiveChat') {
             liveChatDiv.classList.add('bee_hidden');
@@ -39,41 +46,3 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
-
-/* const closeBtn = document.getElementById('close-button');
-    const closeChatBtn = document.getElementById('close-chat-button');
-    const chatBtn = document.getElementById('chat-button');
-    const telegramBtn = document.getElementById('telegram-button');
-
-    mainBtn.addEventListener('click', () => {
-        mainBtn.classList.add('hidden');
-        telegramBtn.classList.remove('hidden');
-        closeBtn.classList.remove('hidden');
-        chatBtn.classList.remove('hidden');
-    });
-
-    closeBtn.addEventListener('click', () => {
-        mainBtn.classList.remove('hidden');
-        telegramBtn.classList.add('hidden');
-        closeBtn.classList.add('hidden');
-        chatBtn.classList.add('hidden');
-    });
-
-    chatBtn.addEventListener('click', () => {
-        telegramBtn.classList.add('hidden');
-        closeBtn.classList.add('hidden');
-        chatBtn.classList.add('hidden');
-        iframeContainer.classList.remove('hidden');
-        closeChatBtn.classList.remove('hidden');
-    });
-
-    closeChatBtn.addEventListener('click', () => {
-        telegramBtn.classList.add('hidden');
-        closeBtn.classList.add('hidden');
-        chatBtn.classList.add('hidden');
-        mainBtn.classList.remove('hidden');
-        iframeContainer.classList.add('hidden');
-        closeChatBtn.classList.add('hidden');
-    });
-});
- */
