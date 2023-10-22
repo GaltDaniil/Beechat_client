@@ -9,6 +9,10 @@ document.addEventListener('DOMContentLoaded', function () {
         mainBtn.classList.add('bee_hidden');
         closeWidgetsBtn.classList.remove('bee_hidden');
         buttonsIframes.style.height = '202px';
+        buttonsIframes.contentWindow.postMessage(
+            { action: 'showButtons', location: window.location.href },
+            '*',
+        );
     });
 
     closeWidgetsBtn.addEventListener('click', () => {
@@ -26,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     window.addEventListener('message', function (event) {
-        if (event.origin !== 'http://localhost:3000') return; // Убедитесь, что это сообщение от вашего iframe
+        if (event.origin !== 'https://beechat.ru') return; // Убедитесь, что это сообщение от вашего iframe
 
         var message = event.data;
         if (message.action === 'showLiveChat') {

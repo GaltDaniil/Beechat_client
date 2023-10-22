@@ -1,7 +1,7 @@
 import React from 'react';
 //@ts-ignore
 import styles from './WidgetButtons.module.scss';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { useAppDispatch } from '../../hooks/redux';
 import { openOrCloseOnlineChat } from '../../redux/reducers/ChatSlice';
 //import { useAppDispatch } from '../../hooks/redux';
 //import axios from '../../axios';
@@ -9,11 +9,21 @@ import { openOrCloseOnlineChat } from '../../redux/reducers/ChatSlice';
 export const WidgetButtons = () => {
     const dispatch = useAppDispatch();
 
-    const isOpenChat = useAppSelector((state) => state.chatReducer.beechatIsOpen);
-    console.log('isOpenChat в виджетах', isOpenChat);
-
     const urlParams = new URLSearchParams(window.location.search);
     const account_id = urlParams.get('accountId');
+
+    const [fromUrl, setFromUrl] = React.useState('');
+
+    React.useEffect(() => {
+        window.addEventListener('message', (event: MessageEvent<any>) => {
+            console.log(event);
+            console.log(event.data);
+            if (event.data.action === 'showLiveChat') {
+                const location = event.data.location as string;
+                setFromUrl((prev) => location);
+            }
+        });
+    }, []);
 
     var messageToParent = {
         action: 'showLiveChat', // Например, сообщение о показе live chat
@@ -56,7 +66,7 @@ export const WidgetButtons = () => {
             <div className={styles.telegram}>
                 <a
                     target="_blank"
-                    href={`https://t.me/LF_support_bot?start=accountId=${account_id}`}
+                    href={`https://t.me/LF_support_bot?start=account_id=${account_id}&from_url=${fromUrl}`}
                     rel="noreferrer"
                 >
                     <img
