@@ -37,6 +37,7 @@ export const ChatLayuot = () => {
     const [text, setText] = React.useState('');
 
     const refDivMessagesSpace = React.useRef(null);
+    console.log('перерисовка');
 
     /* ============= FUNCTIONS ============= */
 
@@ -165,7 +166,7 @@ export const ChatLayuot = () => {
 
                 <Layout style={{ minHeight: '100vh' }}>
                     <Sider
-                        width={350}
+                        width={320}
                         style={{
                             background: '#f3f7f9',
                             padding: '0 0px',
@@ -181,10 +182,10 @@ export const ChatLayuot = () => {
                                 options={['Все', 'Новые']}
                             />
                         </Space>
-                        <List>
+                        <List className={styles.chatList}>
                             {chats && activeFilter === 'Новые' //@ts-ignore
                                 ? chats
-                                      .filter((el) => el.unread_messages_count > 0)
+                                      .filter((el) => el.unread_messages_count > 0 && !el.is_hidden)
                                       .map((e, index) => (
                                           <ChatContact
                                               key={index}
@@ -193,7 +194,7 @@ export const ChatLayuot = () => {
                                           />
                                       ))
                                 : chats
-                                      .filter((el) => el.last_message)
+                                      .filter((el) => el.last_message && !el.is_hidden)
                                       .map((e, index) => (
                                           <ChatContact
                                               key={index}

@@ -37,7 +37,8 @@ export const deleteChat = createAsyncThunk('chats/deleteChat', async (params: an
 });
 
 export const hideChat = createAsyncThunk('chats/hideChat', async (params: any) => {
-    const { data } = await axios.patch(`/chats/`);
+    const { data } = await axios.patch(`/chats/`, params);
+    console.log(data);
     return data;
 });
 
@@ -64,6 +65,27 @@ export const chatSlice = createSlice({
             state.error = '';
         },
         [getChats.rejected.type]: (state, action: PayloadAction<string>) => {
+            state.isLoading = false;
+            state.error = action.payload;
+        },
+
+        [hideChat.pending.type]: (state, action: PayloadAction) => {
+            state.isLoading = true;
+        },
+        [hideChat.fulfilled.type]: (state, action: PayloadAction<IChatResponse>) => {
+            state.isLoading = false;
+            console.log('123');
+            state.chats = state.chats.map((el) => {
+                if (el.id === action.payload.id) {
+                    el.is_hidden = true;
+                    return el;
+                }
+                return el;
+            });
+            state.error = '';
+            console.log(state.chats);
+        },
+        [hideChat.rejected.type]: (state, action: PayloadAction<string>) => {
             state.isLoading = false;
             state.error = action.payload;
         },

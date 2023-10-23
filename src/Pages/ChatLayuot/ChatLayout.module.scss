@@ -1,6 +1,21 @@
 .title {
     padding: 10px;
 }
+.chatList {
+    height: 100vh;
+    overflow: auto;
+
+    &::-webkit-scrollbar-width {
+    }
+    &::-webkit-scrollbar-thumb {
+        background-color: #c2d7ff;
+        width: 5px;
+    }
+    &::-webkit-scrollbar {
+        width: 5px; /* толщина скроллбара */
+        background-color: rgb(248, 247, 255);
+    }
+}
 
 .content {
     display: flex;

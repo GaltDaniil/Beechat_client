@@ -21,12 +21,10 @@ export const ChatContact: React.FC<IProps> = (props) => {
     const dispatch = useAppDispatch();
 
     const changeChatId = () => {
-        //@ts-ignore
-        props.setActiveChatId((pred) => props.id);
         dispatch(setCurrentChat(props.id));
     };
     const hideThisChat = () => {
-        console.log('клик по делит');
+        console.log('клик по скрытию');
         dispatch(hideChat({ chat_id: props.id }));
     };
 
