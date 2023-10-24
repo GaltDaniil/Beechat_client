@@ -99,7 +99,7 @@ export const ChatLayuot = () => {
             dispatch(addNewMessage(data.payload));
         });
 
-        socket.on('sendTgMessage', async (data) => {
+        socket.on('sendMessengerMessage', async (data) => {
             setTgMessageData((prev) => data);
         });
         socket.on('update', () => {

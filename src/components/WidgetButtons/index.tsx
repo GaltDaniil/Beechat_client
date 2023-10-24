@@ -1,8 +1,6 @@
 import React from 'react';
 //@ts-ignore
 import styles from './WidgetButtons.module.scss';
-//import { useAppDispatch } from '../../hooks/redux';
-//import axios from '../../axios';
 
 export const WidgetButtons = () => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -22,7 +20,7 @@ export const WidgetButtons = () => {
     }, []);
 
     var messageToParent = {
-        action: 'showLiveChat', // Например, сообщение о показе live chat
+        action: 'showLiveChat',
     };
 
     // Отправляем сообщение родительскому документу
@@ -31,37 +29,26 @@ export const WidgetButtons = () => {
         console.log('click');
     };
 
-    /* React.useEffect(() => {
-        const openWidgets = async () => {
-            let localStorageBeeChatId: string | null = window.localStorage.getItem('beechat');
-            let newChatId;
-            if (!localStorageBeeChatId && account_id) {
-                const { data } = await axios.post('/chats', {
-                    account_id,
-                    chat_type: 'beeChat',
-                });
-                window.localStorage.setItem('beechat', data.id);
-            } else {
-                setChat_id((pred) => localStorageBeeChatId!);
-                newChatId = Number(localStorageBeeChatId);
-                const { data } = await axios.get(`/chats/${localStorageBeeChatId}`);
-                console.log(data);
-                //@ts-ignore
-                if (data.client_id) setInfoShapeIsActive(false);
-            }
-
-            socket.emit('join', { chat_id: newChatId });
-
-        };
-        openChat();
-    }, []); */
-
     return (
         <div className={styles.buttonsContainer}>
+            <div className={styles.vk}>
+                <a
+                    target="_blank"
+                    href={`https://vk.me/public212085097?ref=accountId=${account_id}_fromUrl=${fromUrl}`}
+                    rel="noreferrer"
+                >
+                    <img
+                        src="https://cdn-icons-png.flaticon.com/256/145/145813.png"
+                        alt="tg"
+                        width={50}
+                        height={50}
+                    />
+                </a>
+            </div>
             <div className={styles.telegram}>
                 <a
                     target="_blank"
-                    href={`https://t.me/LF_support_bot?start=account_id=${account_id}&from_url=${fromUrl}`}
+                    href={`https://t.me/LF_support_bot?start=accountId=${account_id}&fromUrl=${fromUrl}`}
                     rel="noreferrer"
                 >
                     <img
