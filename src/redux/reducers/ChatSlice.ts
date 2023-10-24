@@ -74,7 +74,6 @@ export const chatSlice = createSlice({
         },
         [hideChat.fulfilled.type]: (state, action: PayloadAction<IChatResponse>) => {
             state.isLoading = false;
-            console.log('123');
             state.chats = state.chats.map((el) => {
                 if (el.id === action.payload.id) {
                     el.is_hidden = true;
@@ -83,7 +82,6 @@ export const chatSlice = createSlice({
                 return el;
             });
             state.error = '';
-            console.log(state.chats);
         },
         [hideChat.rejected.type]: (state, action: PayloadAction<string>) => {
             state.isLoading = false;

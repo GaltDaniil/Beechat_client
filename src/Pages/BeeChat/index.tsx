@@ -47,6 +47,7 @@ export const BeeChat: React.FC = () => {
             }
         });
     }, []);
+    console.log('какая страница? fromUrl', fromUrl);
 
     React.useEffect(() => {
         if (contentDivRef.current) {

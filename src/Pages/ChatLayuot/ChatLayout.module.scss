@@ -2,7 +2,7 @@
     padding: 10px;
 }
 .chatList {
-    height: 100vh;
+    height: 100%;
     overflow: auto;
 
     &::-webkit-scrollbar-width {
@@ -20,7 +20,7 @@
 .content {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100%;
     position: relative;
 
     .spinnerDiv {

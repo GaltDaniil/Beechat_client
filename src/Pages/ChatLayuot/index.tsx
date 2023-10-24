@@ -37,7 +37,7 @@ export const ChatLayuot = () => {
     const [text, setText] = React.useState('');
 
     const refDivMessagesSpace = React.useRef(null);
-    console.log('перерисовка');
+    console.log(chats);
 
     /* ============= FUNCTIONS ============= */
 
