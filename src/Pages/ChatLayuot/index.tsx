@@ -37,7 +37,6 @@ export const ChatLayuot = () => {
     const [text, setText] = React.useState('');
 
     const refDivMessagesSpace = React.useRef(null);
-    console.log(chats);
 
     /* ============= FUNCTIONS ============= */
 
@@ -168,10 +167,14 @@ export const ChatLayuot = () => {
                     <Sider
                         width={320}
                         style={{
+                            display: 'flex',
+                            flexDirection: 'column',
                             background: '#f3f7f9',
                             padding: '0 0px',
                             border: '1px solid #eee',
+                            overflow: 'hidden',
                         }}
+                        className={styles.chatsHolder}
                     >
                         <h4 className={styles.title}>Диалоги</h4>
                         <Space direction="vertical">
