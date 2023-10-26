@@ -28,6 +28,18 @@ export const ChatContact: React.FC<IProps> = (props) => {
         dispatch(hideChat({ chat_id: props.id }));
     };
 
+    const witchMessengerIcon = () => {
+        if (props.chat_type === 'telegram') {
+            return 'imgs/messengerIcon/telegram.png';
+        } else if (props.chat_type === 'beeChat') {
+            return 'imgs/messengerIcon/beechat.png';
+        } else if (props.chat_type === 'vk') {
+            return 'imgs/messengerIcon/vk.png';
+        } else {
+            return 'imgs/messengerIcon/instagram.png';
+        }
+    };
+
     return (
         <div className={styles.container}>
             <List.Item
@@ -44,10 +56,17 @@ export const ChatContact: React.FC<IProps> = (props) => {
             >
                 <List.Item.Meta
                     avatar={
-                        <Avatar
-                            style={{ width: '52px', height: '52px' }}
-                            src={`https://beechat.ru/${props.chat_avatar}`}
-                        />
+                        <div className={styles.avatarHolder}>
+                            <Avatar
+                                style={{ width: '52px', height: '52px' }}
+                                src={`https://beechat.ru/${props.chat_avatar}`}
+                            />
+                            <img
+                                className={styles.messengerIcon}
+                                src={`https://beechat.ru/${witchMessengerIcon()}`}
+                                alt=""
+                            />
+                        </div>
                     }
                     title={
                         <a className={styles.name}>

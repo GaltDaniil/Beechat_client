@@ -4,6 +4,17 @@
     overflow: hidden;
     border-bottom: 1px rgb(214, 214, 214) solid;
 
+    .avatarHolder {
+        position: relative;
+        .messengerIcon {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            bottom: 0;
+            right: 0;
+        }
+    }
+
     .name {
         font-size: 13px;
         transition: none;
