@@ -51,22 +51,20 @@ body {
 
         overflow: hidden;
 
-        background-image: url('../../../public/background.jpg');
-        background-size: cover; /* Масштабирование с сохранением соотношения сторон и заполнением */
-        background-position: top;
+        background-color: #f8f8fd;
 
         border-radius: 0 0 20px 20px;
         height: 100%;
 
         .leadAndInfoShape {
             justify-content: center;
-            padding: 6px;
+            padding: 12px;
 
             position: absolute;
             top: 0;
 
             width: 100%;
-            background: rgba(255, 209, 42, 0.3);
+            background: rgb(215, 222, 255);
             border-radius: 0 0 14px 14px;
 
             .infoShape {
@@ -74,6 +72,8 @@ body {
                 p {
                     font-size: 13px;
                     margin-left: 10px;
+                    margin-top: 5px;
+                    margin-bottom: 15px;
                     color: #5e451a;
                     width: 80%;
                 }
@@ -83,13 +83,21 @@ body {
                     color: #916c2c;
                 }
                 .pLink {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
                     margin-top: 5px;
                     margin-bottom: 5px;
-                    color: rgb(60, 60, 193);
-                    text-decoration: underline;
+
+                    background-color: rgb(142, 142, 255);
+                    color: rgb(255, 255, 255);
+                    border-radius: 10px;
+                    width: 42%;
+                    height: 40px;
                     cursor: pointer;
                     &:hover {
-                        color: rgb(0, 0, 176);
+                        background-color: rgb(109, 109, 255);
                     }
                 }
             }
@@ -113,6 +121,26 @@ body {
                     margin-top: 15px;
                     margin-left: auto;
                     margin-right: auto;
+                }
+                .ant-segmented-item {
+                    transition: red 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+                }
+                .ant-segmented-item-selected {
+                    background-color: red;
+                }
+
+                .ant-segmented-thumb {
+                    background-color: red;
+                }
+                .messengerHolder {
+                    display: flex;
+
+                    .messengerIcon {
+                        margin: 0px 6px;
+                        width: 50px;
+                        height: 50px;
+                        border-radius: 6px;
+                    }
                 }
             }
         }

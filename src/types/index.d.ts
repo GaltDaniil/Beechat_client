@@ -44,55 +44,36 @@ export interface IDealJoin extends IDeal {
     setPreviousDeal: React.Dispatch<React.SetStateAction<IDealJoin | null>>;
 }
 
-export interface IChat {
+export interface IContact {
     id: number;
-    account_id: number;
-    created_at: Date;
-    chat_avatar?: string;
-    chat_type: string;
-    client_id?: number;
+    contact_name: string;
+    contact_avatar?: string;
+    contact_email: string;
+    contact_phone?: string;
     messenger_id?: number;
+    messenger_type: 'telegram' | 'instagram' | 'whatsapp' | 'vk' | 'beechat';
+    created_at: Date;
+    account_id: number;
+    instagram_chat_id: string;
     is_hidden: boolean;
     from_url: string;
+    description: string;
+    manager_id?: number;
 }
 
-export interface IChatResponse extends IChat {
-    client_id?: number;
-    client_name?: string;
-    client_phone: string;
-    client_custom_fields: { tg_name: string; tg_user_name: string };
+export interface IContactResponse extends IContact {
     last_message?: string;
-    last_message_sended_at: Date;
+    last_message_created_at: Date;
     unread_messages_count: number;
+    last_message_from_contact: boolean;
     status?: boolean;
 }
 
 export interface IMessage {
     id: number;
-    sended_at: Date;
-    text: string;
-    chat_id: number;
-    from_client: boolean;
-    is_readed: boolean;
-}
-
-export interface IClient {
-    id: number;
-
-    name: string;
-    surname?: string;
-    email?: string;
-    phone?: string;
-    adress?: string;
-    avatar?: string;
-    utm_source?: string;
-    utm_campaign?: string;
-    utm_content?: string;
-    utm_term?: string;
-    chat_type?: string;
-    manager_id?: number;
-    custom_fields?: object;
-    telegram_id?: number;
-    account_id: number;
     created_at: Date;
+    text: string;
+    contact_id: number;
+    from_contact: boolean;
+    is_readed: boolean;
 }

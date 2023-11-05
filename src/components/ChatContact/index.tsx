@@ -4,39 +4,45 @@ import React from 'react';
 import styles from './ChatContact.module.scss';
 import moment from 'moment';
 import 'moment/locale/ru';
-import { IChatResponse } from '../../types';
+import { IContactResponse } from '../../types';
 import { useAppDispatch } from '../../hooks/redux';
-import { hideChat, setCurrentChat } from '../../redux/reducers/ChatSlice';
-import { CloseOutlined } from '@ant-design/icons';
+import { setCurrentContact } from '../../redux/reducers/ContactSlice';
+//import { CloseOutlined } from '@ant-design/icons';
 //import { CloseOutlined } from '@ant-design/icons';
 
-interface IProps extends IChatResponse {
-    client_phone: string;
-    last_message_sended_at: Date;
+interface IProps extends IContactResponse {
+    last_message_created_at: Date;
+    last_message_from_contact: boolean;
     unread_messages_count: number;
-    activeChatId?: number;
+    activeContactId?: number;
 }
 
 export const ChatContact: React.FC<IProps> = (props) => {
     const dispatch = useAppDispatch();
 
-    const changeChatId = () => {
-        dispatch(setCurrentChat(props.id));
-    };
-    const hideThisChat = () => {
-        console.log('клик по скрытию');
-        dispatch(hideChat({ chat_id: props.id }));
+    console.log(props);
+
+    const changeContactId = () => {
+        dispatch(setCurrentContact(props.id));
     };
 
-    const witchMessengerIcon = () => {
-        if (props.chat_type === 'telegram') {
-            return 'imgs/messengerIcon/telegram.png';
-        } else if (props.chat_type === 'beeChat') {
-            return 'imgs/messengerIcon/beechat.png';
-        } else if (props.chat_type === 'vk') {
-            return 'imgs/messengerIcon/vk.png';
+    const dateGenerator = () => {
+        const currentDate = moment(); // Текущая дата и время
+        const dateFromDatabase = moment(props.last_message_created_at);
+
+        // Разница в днях
+        const daysDiff = currentDate.diff(dateFromDatabase, 'days');
+
+        // Проверка на "Вчера"
+        if (daysDiff === 1) {
+            return `Вчера в ${dateFromDatabase.format('HH:mm')}`;
+        } else if (daysDiff === 0) {
+            // Проверка на "Сегодня"
+            return `Сегодня в ${dateFromDatabase.format('HH:mm')}`;
+        } else if (daysDiff <= 7) {
+            return `${dateFromDatabase.format('dddd')} в ${dateFromDatabase.format('HH:mm')}`;
         } else {
-            return 'imgs/messengerIcon/instagram.png';
+            return `${dateFromDatabase.format('DD MMM. в HH:mm')}`;
         }
     };
 
@@ -44,59 +50,65 @@ export const ChatContact: React.FC<IProps> = (props) => {
         <div className={styles.container}>
             <List.Item
                 className={
-                    props.activeChatId === props.id
+                    props.activeContactId === props.id
                         ? `${styles.item} ${styles.checked}`
                         : styles.item
                 }
-                style={{ padding: '14px 10px' }}
+                style={{ padding: '10px 8px' }}
                 key={props.id}
                 onClick={() => {
-                    changeChatId();
+                    changeContactId();
                 }}
             >
                 <List.Item.Meta
                     avatar={
                         <div className={styles.avatarHolder}>
                             <Avatar
-                                style={{ width: '52px', height: '52px' }}
-                                src={`https://beechat.ru/${props.chat_avatar}`}
+                                style={{ width: '44px', height: '44px' }}
+                                src={`https://beechat.ru/${props.contact_avatar}`}
                             />
+                            {props.unread_messages_count && props.unread_messages_count > 0 ? (
+                                <div className={styles.newMessages}>
+                                    {props.unread_messages_count}
+                                </div>
+                            ) : null}
+                        </div>
+                    }
+                    title={
+                        <div className={styles.nameHolder}>
+                            <a className={styles.name}>
+                                {props.contact_name ? props.contact_name : 'неизвестно'}
+                            </a>
+                            <div className={styles.dateAndTime}>
+                                {props.last_message_created_at ? dateGenerator() : ''}
+                            </div>
+                        </div>
+                    }
+                    description={
+                        <div className={styles.descriptionHolder}>
+                            <div className={styles.description}>
+                                {props.last_message_from_contact ? '' : 'Вы: '}
+                                {props.last_message}
+                            </div>
+
                             <img
                                 className={styles.messengerIcon}
-                                src={`https://beechat.ru/${witchMessengerIcon()}`}
+                                src={`https://beechat.ru/imgs/messengerIcon/${props.messenger_type}.png`}
                                 alt=""
                             />
                         </div>
                     }
-                    title={
-                        <a className={styles.name}>
-                            {props.chat_type === 'beeChat' && !props.client_name
-                                ? 'Онлайн чат'
-                                : props.client_name || props.client_custom_fields.tg_name}
-                        </a>
-                    }
-                    description={<div className={styles.description}>{props.last_message}</div>}
                 />
                 {/* <div className={styles.onlineIcon}></div> */}
-                <div className={styles.info}>
-                    {props.unread_messages_count && props.unread_messages_count > 0 ? (
-                        <div className={styles.newMessages}>{props.unread_messages_count}</div>
-                    ) : null}
-                    <div className={styles.time}>
-                        {props.last_message_sended_at
-                            ? moment(props.last_message_sended_at).format('D MMM HH:mm')
-                            : ''}
-                    </div>
-                </div>
             </List.Item>
-            <div
+            {/* <div
                 onClick={() => {
                     hideThisChat();
                 }}
                 className={styles.deleteBtn}
             >
                 <CloseOutlined />
-            </div>
+            </div> */}
         </div>
     );
 };

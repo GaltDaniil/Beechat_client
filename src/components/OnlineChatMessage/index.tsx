@@ -1,20 +1,15 @@
 import React from 'react';
 //@ts-ignore
-import styles from './ChatFrameMessage.module.scss';
+import styles from './OnlineChatMessage.module.scss';
 import { CheckOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import { IMessage } from '../../types';
 
-interface IChatFrameMessageProps {
-    from_client: boolean;
-    text: string;
-    sended_at: Date;
-}
-
-export const ChatFrameMessage: React.FC<IChatFrameMessageProps> = (props) => {
+export const OnlineChatMessage: React.FC<IMessage> = (props) => {
     return (
         <div
             className={
-                props.from_client
+                props.from_contact
                     ? `${styles.messageShape} ${styles.client}`
                     : `${styles.messageShape} ${styles.manager}`
             }
@@ -23,7 +18,7 @@ export const ChatFrameMessage: React.FC<IChatFrameMessageProps> = (props) => {
                 <div className={styles.text}>{props.text}</div>
             </div>
             <div className={styles.time}>
-                <div>{moment(props.sended_at).format('HH:mm')}</div>
+                <div>{moment(props.created_at).format('HH:mm')}</div>
                 <CheckOutlined />
             </div>
         </div>

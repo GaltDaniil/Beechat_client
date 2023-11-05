@@ -3,13 +3,13 @@ import { Layout, List, Input, Segmented, Space } from 'antd';
 import socket from '../../socket';
 //@ts-ignore
 import styles from './ChatLayout.module.scss';
-import { ChatAdminMessage } from '../../components/ChatAdminMessage';
+import { AdminChatMessage } from '../../components/AdminChatMessage';
 import axios from '../../axios';
 import { ChatContact } from '../../components/ChatContact';
-import { ClientInfoSider } from '../../components/ClientInfoSider/ClientInfoSider';
+import { ContactInfoSider } from '../../components/ContactInfoSider';
 import { IMessage } from '../../types';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { getChats } from '../../redux/reducers/ChatSlice';
+import { getManyContacts } from '../../redux/reducers/ContactSlice';
 import { Spinner } from '../../components/Spinner';
 import {
     addNewMessage,
@@ -28,7 +28,7 @@ const { TextArea } = Input;
 
 export const ChatLayuot = () => {
     const dispatch = useAppDispatch();
-    const { chats, currentChat } = useAppSelector((state) => state.chatReducer);
+    const { contacts, currentContact } = useAppSelector((state) => state.contactReducer);
     const { isLoading, messages } = useAppSelector((state) => state.messageReducer);
     //@ts-ignore
     const [activeFilter, setActiveFilter] = React.useState<string | number>('Все');
@@ -46,9 +46,9 @@ export const ChatLayuot = () => {
         const newMessages = messages.map((el) => el);
         newMessages
             //@ts-ignore
-            .sort((a, b) => new Date(a.sended_at) - new Date(b.sended_at))
+            .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
             .forEach((message) => {
-                const messageDate = new Date(message.sended_at).toLocaleDateString();
+                const messageDate = new Date(message.created_at).toLocaleDateString();
 
                 if (messageDate !== currentDay) {
                     currentDay = messageDate;
@@ -66,13 +66,14 @@ export const ChatLayuot = () => {
     };
 
     const sendMessage = async () => {
-        if (currentChat && text) {
+        if (currentContact && text) {
             const { data } = await axios.post('/messages', {
-                chat_id: currentChat.id,
+                contact_id: currentContact.id,
                 text,
-                from_client: false,
-                chat_type: currentChat.chat_type,
-                messenger_id: currentChat.messenger_id,
+                from_contact: false,
+                messenger_type: currentContact.messenger_type,
+                messenger_id: currentContact.messenger_id,
+                instagram_chat_id: currentContact.instagram_chat_id,
             });
             socket.emit('sendMessage', data);
             setText((prev) => '');
@@ -89,7 +90,7 @@ export const ChatLayuot = () => {
     /* ============= EFFECTS ============= */
 
     React.useEffect(() => {
-        dispatch(getChats());
+        dispatch(getManyContacts());
 
         socket.on('newMessage', async (dataMessage: IMessage) => {
             console.log('отработал NewMessage');
@@ -103,7 +104,7 @@ export const ChatLayuot = () => {
         });
         socket.on('update', () => {
             console.log('update');
-            dispatch(getChats());
+            dispatch(getManyContacts());
         });
 
         //longPooling();
@@ -114,12 +115,8 @@ export const ChatLayuot = () => {
 
     React.useEffect(() => {
         const fx = async () => {
-            console.log('отработал ТГ приемщик');
-            console.log(tgMessageData);
-            console.log(currentChat);
-            if (tgMessageData && currentChat) {
-                if (currentChat.messenger_id === tgMessageData.id) {
-                    console.log(tgMessageData);
+            if (tgMessageData && currentContact) {
+                if (currentContact.id === tgMessageData.contact_id) {
                     //@ts-ignore
                     dispatch(readOneMessages(tgMessageData.id));
                     dispatch(addNewMessage(tgMessageData));
@@ -139,37 +136,25 @@ export const ChatLayuot = () => {
 
     React.useEffect(() => {
         //setIsLoading(true);
-        if (currentChat) {
-            dispatch(getAndReadMessages(currentChat.id));
-            socket.emit('join', { chat_id: currentChat.id });
-            dispatch(getChats());
-            //setIsLoading(false);
+        if (currentContact) {
+            dispatch(getAndReadMessages(currentContact.id));
+            socket.emit('join', { contact_id: currentContact.id });
+            dispatch(getManyContacts());
         }
-    }, [currentChat]);
+    }, [currentContact]);
 
     /* ============= EFFECTS END ============= */
 
     return (
         <>
             <Layout style={{ minHeight: '100vh' }}>
-                {/* <Sider
-            width={180}
-            style={{ background: '#fff', padding: '0 20px', border: '1px solid #eee' }}
-        >
-            <List>
-                <List.Item>Новые</List.Item>
-                <List.Item>Отвеченные</List.Item>
-                <List.Item>В архиве</List.Item>
-            </List>
-        </Sider> */}
-
                 <Layout style={{ minHeight: '100vh' }}>
                     <Sider
                         width={320}
                         style={{
                             display: 'flex',
                             flexDirection: 'column',
-                            background: '#f3f7f9',
+                            background: '#fff',
                             padding: '0 0px',
                             border: '1px solid #eee',
                             overflow: 'hidden',
@@ -186,22 +171,22 @@ export const ChatLayuot = () => {
                             />
                         </Space>
                         <List className={styles.chatList}>
-                            {chats && activeFilter === 'Новые' //@ts-ignore
-                                ? chats
+                            {contacts && activeFilter === 'Новые' //@ts-ignore
+                                ? contacts
                                       .filter((el) => el.unread_messages_count > 0 && !el.is_hidden)
                                       .map((e, index) => (
                                           <ChatContact
                                               key={index}
-                                              activeChatId={currentChat?.id}
+                                              activeContactId={currentContact?.id}
                                               {...e}
                                           />
                                       ))
-                                : chats
+                                : contacts
                                       .filter((el) => el.last_message && !el.is_hidden)
                                       .map((e, index) => (
                                           <ChatContact
                                               key={index}
-                                              activeChatId={currentChat?.id}
+                                              activeContactId={currentContact?.id}
                                               {...e}
                                           />
                                       ))}
@@ -224,11 +209,11 @@ export const ChatLayuot = () => {
                                             );
                                         }
                                         return (
-                                            <ChatAdminMessage
+                                            <AdminChatMessage
                                                 key={index}
                                                 {...el}
-                                                client_name={currentChat!.client_name!}
-                                                chat_type={currentChat!.chat_type}
+                                                contact_name={currentContact!.contact_name!}
+                                                messenger_type={currentContact!.messenger_type}
                                             />
                                         );
                                     })
@@ -250,8 +235,8 @@ export const ChatLayuot = () => {
                                             <ChatAdminMessage
                                                 key={index}
                                                 {...el}
-                                                client_name={currentChat!.client_name!}
-                                                chat_type={currentChat!.chat_type}
+                                                client_name={currentContact!.client_name!}
+                                                messenger_type={currentContact!.messenger_type}
                                             />
                                         );
                                     })
@@ -262,7 +247,7 @@ export const ChatLayuot = () => {
 
                             <div className={styles.inputHolder}>
                                 <TextArea
-                                    disabled={currentChat ? false : true}
+                                    disabled={currentContact ? false : true}
                                     value={text}
                                     className={styles.textArea}
                                     onChange={(e) => {
@@ -272,15 +257,15 @@ export const ChatLayuot = () => {
                                     placeholder="написать сообщение"
                                     autoSize={{ minRows: 4, maxRows: 6 }}
                                 />
-                                <button disabled={!currentChat} onClick={sendMessage}>
+                                <button disabled={!currentContact} onClick={sendMessage}>
                                     Отправить
                                 </button>
                             </div>
                         </div>
                     </Content>
-                    {currentChat !== null ? (
+                    {currentContact !== null ? (
                         //@ts-ignore
-                        <ClientInfoSider {...currentChat} />
+                        <ContactInfoSider {...currentContact} />
                     ) : (
                         <></>
                     )}

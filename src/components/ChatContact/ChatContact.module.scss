@@ -2,30 +2,73 @@
     position: relative;
     max-height: 80px;
     overflow: hidden;
-    border-bottom: 1px rgb(214, 214, 214) solid;
+    border-bottom: 1px rgb(247, 247, 247) solid;
 
     .avatarHolder {
         position: relative;
-        .messengerIcon {
+
+        .newMessages {
             position: absolute;
-            width: 20px;
-            height: 20px;
             bottom: 0;
             right: 0;
+
+            display: flex;
+            justify-content: center;
+
+            align-items: center;
+            width: 20px;
+            height: 20px;
+
+            font-size: 9px;
+            font-weight: 600;
+            color: white;
+
+            border: 2px solid #fff;
+            border-radius: 50%;
+            background: rgb(224, 97, 97);
         }
     }
+    .nameHolder {
+        display: flex;
+        justify-content: space-between;
 
-    .name {
-        font-size: 13px;
-        transition: none;
+        .name {
+            color: rgb(24, 24, 24);
+            font-size: 14px;
+            transition: none;
+            white-space: nowrap; /* Запретить перенос текста на новую строку */
+            overflow: hidden; /* Скрыть содержимое, которое выходит за пределы блока */
+            text-overflow: ellipsis; /* Добавить многоточие в конце текста, если он выходит за рамки блока */
+            max-width: 60%; /* Ограничить максимальную ширину, если необходимо */
+        }
+        .dateAndTime {
+            font-size: 11px;
+            font-weight: 500;
+            opacity: 0.6;
+        }
     }
+    .descriptionHolder {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
 
-    .description {
-        font-size: 13px;
-        overflow: hidden;
-        line-height: 1.2;
-        max-height: 30px;
-        margin-right: 5px;
+        .description {
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 90%;
+            flex: 1;
+        }
+
+        .messengerIcon {
+            opacity: 0.5;
+            width: 16px;
+            height: 16px;
+            bottom: 5px;
+            right: 5px;
+            border-radius: 4px;
+        }
     }
 
     .item {
@@ -62,10 +105,6 @@
                 border-radius: 50%;
                 background: rgb(121, 168, 255);
             }
-            .time {
-                font-size: 10px;
-                opacity: 0.8;
-            }
         }
         .onlineIcon {
             position: absolute;
@@ -85,8 +124,8 @@
         &::after {
             content: ' ';
             position: absolute;
-            background-color: #3385ff;
-            width: 5px;
+            background-color: #6aa6ff;
+            width: 3px;
             height: 100%;
             left: 0;
         }

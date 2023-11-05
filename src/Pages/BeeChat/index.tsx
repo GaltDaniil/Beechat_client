@@ -1,32 +1,28 @@
 import React from 'react';
 //@ts-ignore
 import { CloseOutlined, ExclamationCircleOutlined, SendOutlined } from '@ant-design/icons';
-import { ChatFrameMessage } from '../../components/ChatMessage';
-import { Input } from 'antd';
+import { OnlineChatMessage } from '../../components/OnlineChatMessage';
+import { Avatar, ConfigProvider, Input, Segmented, Space } from 'antd';
 
 //@ts-ignore
 import styles from './beeChat.module.scss';
 import socket from '../../socket';
 import axios from '../../axios';
-import { IMessage } from '../../types';
+import { IContact, IMessage } from '../../types';
 
 const { TextArea } = Input;
 
 export const BeeChat: React.FC = () => {
     const [isChatOpen, setIsChatOpen] = React.useState(false);
-
     const [text, setText] = React.useState('');
-
-    const [chat_id, setChatId] = React.useState<number | null>(null);
-
+    const [contact_id, setContactId] = React.useState<number | null>(null);
     const [messages, setMessages] = React.useState<IMessage[]>([]);
-
     const [infoShapeIsActive, setInfoShapeIsActive] = React.useState(true);
     const [leadShapeIsActive, setLeadShapeIsActive] = React.useState(false);
-    const [name, setName] = React.useState('');
-    const [phone, setPhone] = React.useState('');
-    const [description, setDescription] = React.useState('');
+    const [contact_name, setName] = React.useState('');
+    const [contact_phone, setPhone] = React.useState('');
     const [fromUrl, setFromUrl] = React.useState('');
+    const [isMessenger, setIsMessenger] = React.useState<string | number>('telegram');
 
     const contentDivRef = React.useRef(null);
 
@@ -35,11 +31,9 @@ export const BeeChat: React.FC = () => {
 
     React.useEffect(() => {
         socket.on('newMessage', (data: IMessage) => {
-            if (!data.from_client) setMessages((pred) => [...pred, data]);
+            if (!data.from_contact) setMessages((pred) => [...pred, data]);
         });
         window.addEventListener('message', (event: MessageEvent<any>) => {
-            console.log(event);
-            console.log(event.data);
             if (event.data.action === 'showLiveChat') {
                 setIsChatOpen((prev) => true);
                 const location = event.data.location as string;
@@ -47,7 +41,6 @@ export const BeeChat: React.FC = () => {
             }
         });
     }, []);
-    console.log('какая страница? fromUrl', fromUrl);
 
     React.useEffect(() => {
         if (contentDivRef.current) {
@@ -58,19 +51,25 @@ export const BeeChat: React.FC = () => {
 
     //Срабатывает только если чат открывается. Проверяет в localstoeage наличие message_id
     React.useEffect(() => {
-        console.log('запустилась загрузка чатов при открытии');
         if (isChatOpen) {
             const loadingChat = async () => {
-                let localStorageBeeChatId: string | null = window.localStorage.getItem('beechat');
-                if (localStorageBeeChatId) {
-                    const { data } = await axios.get(`/chats/${localStorageBeeChatId}`);
-                    setChatId((prev) => data.id);
-
-                    if (data.client_id) setInfoShapeIsActive(false);
-                    const getMessages = await axios.get(`/messages?chat_id=${data.id}`);
-                    setMessages((prev) => getMessages.data.sort());
-                    console.log('Запустился Join');
-                    socket.emit('join', { chat_id: Number(data.id) });
+                let localStorageContactId: number | undefined = Number(
+                    window.localStorage.getItem('beechat'),
+                );
+                console.log('localStorageContactId is', localStorageContactId);
+                if (localStorageContactId !== undefined) {
+                    const { data } = await axios.get<IContact>(
+                        `/contacts/${localStorageContactId}`,
+                    );
+                    if (data) {
+                        setContactId((prev) => data.id);
+                        if (data.contact_name) setInfoShapeIsActive(false);
+                        const getMessages = await axios.get(`/messages?contact_id=${data.id}`);
+                        setMessages((prev) => getMessages.data.sort());
+                        socket.emit('join', { contact_id: Number(data.id) });
+                    } else {
+                        window.localStorage.removeItem('beechat');
+                    }
                 }
             };
             loadingChat();
@@ -85,7 +84,7 @@ export const BeeChat: React.FC = () => {
             //@ts-ignore
             .sort((a, b) => new Date(a.sended_at) - new Date(b.sended_at))
             .forEach((message) => {
-                const messageDate = new Date(message.sended_at).toLocaleDateString();
+                const messageDate = new Date(message.created_at).toLocaleDateString();
                 if (messageDate !== currentDay) {
                     currentDay = messageDate;
                     messagesByDay.push({
@@ -99,33 +98,32 @@ export const BeeChat: React.FC = () => {
             });
         return messagesByDay;
     };
-    const sendMessage = async () => {
-        if (!chat_id) {
-            const messenger_id = Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 1000000;
-            window.localStorage.setItem('beechat', messenger_id.toString());
-            const resultFromChat = await axios.post('/chats', {
-                account_id,
-                messenger_id,
-                from_url: fromUrl,
-                chat_type: 'beeChat',
-            });
-            setChatId((pred) => resultFromChat.data.id);
-            console.log('Запустился Join');
-            socket.emit('join', { chat_id: resultFromChat.data.id });
 
-            const resultFromMessage = await axios.post('/messages', {
-                chat_id: resultFromChat.data.id,
-                text,
-                from_client: true,
+    const sendMessage = async () => {
+        if (!contact_id) {
+            const newContact = await axios.post('/contacts', {
+                account_id,
+                messenger_id: 0,
+                from_url: fromUrl,
+                messenger_type: 'beechat',
             });
-            setMessages((pred) => [...pred, resultFromMessage.data]);
-            socket.emit('sendMessage', resultFromMessage.data);
+            window.localStorage.setItem('beechat', newContact.data.id.toString());
+            setContactId((pred) => newContact.data.id);
+            socket.emit('join', { contact_id: newContact.data.id });
+
+            const newMessage = await axios.post('/messages', {
+                contact_id: newContact.data.id,
+                text,
+                from_contact: true,
+            });
+            setMessages((pred) => [...pred, newMessage.data]);
+            socket.emit('sendMessage', newMessage.data);
             setText((prev) => '');
         } else {
             const { data } = await axios.post('/messages', {
-                chat_id,
+                contact_id,
                 text,
-                from_client: true,
+                from_contact: true,
             });
             setMessages((pred) => [...pred, data]);
             socket.emit('sendMessage', data);
@@ -144,25 +142,23 @@ export const BeeChat: React.FC = () => {
     };
 
     const sendLeadInfo = async () => {
-        await axios.post('/clients/create-from-chat', {
-            account_id,
-            chat_id,
-            chat_type: 'beechat',
-            name,
-            phone,
-            description,
+        await axios.patch('/contacts/update', {
+            contact_id,
+            contact_name,
+            contact_phone,
+            isMessenger,
         });
 
         setLeadShapeIsActive(false);
         setInfoShapeIsActive(false);
     };
-
+    console.log(isMessenger);
     return (
         <div className={styles.app}>
             <div className={styles.header}>
                 <div>
-                    <img src="./logo192.png" alt="" />
-                    <p>Имя менеджера</p>
+                    <img src="./lf_logo.jpeg" alt="" />
+                    <p>Онлайн поддержка</p>
                 </div>
                 <CloseOutlined onClick={() => closeLiveChat()} className={styles.close_chat} />
             </div>
@@ -173,16 +169,17 @@ export const BeeChat: React.FC = () => {
                             <ExclamationCircleOutlined />
                             <div>
                                 <p>
-                                    Оставьте контактные данные, чтобы получить ответ после закрытия
-                                    этого чата.
+                                    <b>Нет времени ждать ответа?</b> Оставьте свои данные и мы
+                                    свяжемся с вами, как только сможем.
                                 </p>
+
                                 <p
                                     onClick={() => {
-                                        setLeadShapeIsActive(true);
+                                        setLeadShapeIsActive((prev) => !prev);
                                     }}
                                     className={styles.pLink}
                                 >
-                                    Оставить контактные данные
+                                    {leadShapeIsActive ? 'Закрыть' : 'Оставить телефон'}
                                 </p>
                             </div>
                         </div>
@@ -204,17 +201,53 @@ export const BeeChat: React.FC = () => {
                                     type="text"
                                 />
                                 <span>Мессенджер для связи*</span>
-                                <input
-                                    onChange={(e) => {
-                                        setDescription((prev) => e.target.value);
+                                <ConfigProvider
+                                    theme={{
+                                        components: {
+                                            Segmented: {
+                                                itemSelectedBg: 'orange',
+                                            },
+                                        },
                                     }}
-                                    type="text"
-                                />
+                                >
+                                    <Space direction="vertical">
+                                        <Segmented
+                                            onChange={setIsMessenger}
+                                            value={isMessenger}
+                                            options={[
+                                                {
+                                                    label: (
+                                                        <div style={{ padding: 4 }}>
+                                                            <Avatar src="https://beechat.ru/imgs/messengerIcon/telegram.jpg" />
+                                                        </div>
+                                                    ),
+                                                    value: 'telegram',
+                                                },
+                                                {
+                                                    label: (
+                                                        <div style={{ padding: 4 }}>
+                                                            <Avatar src="https://beechat.ru/imgs/messengerIcon/wa.png" />
+                                                        </div>
+                                                    ),
+                                                    value: 'wa',
+                                                },
+                                                {
+                                                    label: (
+                                                        <div style={{ padding: 4 }}>
+                                                            <Avatar src="https://beechat.ru/imgs/messengerIcon/viber.png" />
+                                                        </div>
+                                                    ),
+                                                    value: 'viber',
+                                                },
+                                            ]}
+                                        />
+                                    </Space>
+                                </ConfigProvider>
                                 <button
                                     onClick={() => {
                                         sendLeadInfo();
                                     }}
-                                    disabled={name && phone && description ? false : true}
+                                    disabled={contact_name && contact_phone ? false : true}
                                 >
                                     Отправить
                                 </button>
@@ -234,7 +267,7 @@ export const BeeChat: React.FC = () => {
                                 </div>
                             );
                         }
-                        return <ChatFrameMessage key={index} {...el} />;
+                        return <OnlineChatMessage key={index} {...el} />;
                     })}
                 </div>
                 <div className={styles.contactShape}></div>

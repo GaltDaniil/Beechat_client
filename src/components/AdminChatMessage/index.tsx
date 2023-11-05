@@ -1,41 +1,36 @@
 import React from 'react';
 //@ts-ignore
-import styles from './ChatMessage.module.scss';
+import styles from './AdminChatMessage.module.scss';
 import { CheckOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import { IMessage } from '../../types';
 
-interface IChatAdminMessageProps {
-    id: number;
-    sended_at: Date;
-    text: string;
-    chat_id: string;
-    from_client: boolean;
-    is_readed: boolean;
-    client_name: string;
-    chat_type: string;
+interface IProps extends IMessage {
+    contact_name: string;
+    messenger_type: 'telegram' | 'instagram' | 'whatsapp' | 'vk' | 'beechat';
 }
 
-export const ChatAdminMessage: React.FC<IChatAdminMessageProps> = (props) => {
+export const AdminChatMessage: React.FC<IProps> = (props) => {
     return (
         <div
             className={
-                props.from_client
+                props.from_contact
                     ? `${styles.messageShape} ${styles.client}`
                     : `${styles.messageShape} ${styles.manager}`
             }
         >
             <div className={styles.message}>
                 <div className={styles.name}>
-                    {props.from_client && props.chat_type === 'beeChat'
+                    {props.from_contact && props.messenger_type === 'beechat'
                         ? 'Онлайн чат'
-                        : props.client_name && props.from_client
-                        ? props.client_name
+                        : props.contact_name && props.from_contact
+                        ? props.contact_name
                         : 'Менеджер'}
                 </div>
                 <div className={styles.text}>{props.text}</div>
             </div>
             <div className={styles.time}>
-                <span>{moment(props.sended_at).format('HH:mm')}</span>
+                <span>{moment(props.created_at).format('HH:mm')}</span>
                 {props.is_readed ? (
                     <div className={styles.isreaded}>
                         <CheckOutlined />

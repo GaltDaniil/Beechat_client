@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     closeWidgetsBtn.addEventListener('click', () => {
         let hasHiddenClass = liveChatDiv.classList.contains('bee_hidden');
-        console.log(hasHiddenClass);
         if (hasHiddenClass) {
             mainBtn.classList.remove('bee_hidden');
             closeWidgetsBtn.classList.add('bee_hidden');
@@ -36,12 +35,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (message.action === 'showLiveChat') {
             buttonsIframes.style.height = '0px';
             liveChatDiv.classList.remove('bee_hidden');
-            console.log('отработало до');
             iframeDiv.contentWindow.postMessage(
                 { action: 'showLiveChat', location: window.location.href },
                 '*',
             );
-            console.log('и после');
         }
         if (message.action === 'hideLiveChat') {
             liveChatDiv.classList.add('bee_hidden');

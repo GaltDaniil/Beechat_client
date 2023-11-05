@@ -20,7 +20,7 @@ const initialState: AccountState = {
     error: '',
 };
 
-export const getAccount = createAsyncThunk('account/getChats', async (id: number) => {
+export const getAccount = createAsyncThunk('account/getContacts', async (id: number) => {
     const { data } = await axios.get('/accounts/1');
     return data;
 });
@@ -124,7 +124,7 @@ export const accountSlice = createSlice({
             state.error = action.payload;
         },
 
-        [getDeals.pending.type]: (state, action: PayloadAction<IDealJoin[]>) => {
+        /* [getDeals.pending.type]: (state, action: PayloadAction<IDealJoin[]>) => {
             state.isLoading = true;
         },
         [getDeals.fulfilled.type]: (state, action: PayloadAction<IDealJoin[]>) => {
@@ -135,7 +135,7 @@ export const accountSlice = createSlice({
         [getDeals.rejected.type]: (state, action: PayloadAction<string>) => {
             state.isLoading = false;
             state.error = action.payload;
-        },
+        }, */
     },
 });
 

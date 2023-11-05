@@ -10,8 +10,6 @@ export const WidgetButtons = () => {
 
     React.useEffect(() => {
         window.addEventListener('message', (event: MessageEvent<any>) => {
-            console.log(event);
-            console.log(event.data);
             if (event.data.action === 'showLiveChat') {
                 const location = event.data.location as string;
                 setFromUrl((prev) => location);
@@ -26,7 +24,6 @@ export const WidgetButtons = () => {
     // Отправляем сообщение родительскому документу
     const sendMessageFromIframe = () => {
         window.parent.postMessage(messageToParent, '*');
-        console.log('click');
     };
 
     return (
