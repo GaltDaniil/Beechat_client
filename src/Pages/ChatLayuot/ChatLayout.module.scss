@@ -36,6 +36,27 @@
     min-width: 300px;
     padding-right: 2px;
     background-color: #ffffff;
+
+    .emptySpace {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+
+        img {
+            opacity: 0.1;
+            width: 120px;
+            margin-bottom: 14px;
+        }
+        p {
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+    }
+
     .spinnerDiv {
         height: 100%;
         width: 100%;

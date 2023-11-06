@@ -218,7 +218,7 @@ export const BeeChat: React.FC = () => {
                                                 {
                                                     label: (
                                                         <div style={{ padding: 4 }}>
-                                                            <Avatar src="https://beechat.ru/imgs/messengerIcon/telegram.jpg" />
+                                                            <Avatar src="https://beechat.ru/imgs/messengerIcon/telegram.png" />
                                                         </div>
                                                     ),
                                                     value: 'telegram',

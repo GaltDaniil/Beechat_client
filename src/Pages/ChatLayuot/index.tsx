@@ -38,6 +38,8 @@ export const ChatLayuot = () => {
 
     const refDivMessagesSpace = React.useRef(null);
 
+    console.log('messages', messages);
+
     /* ============= FUNCTIONS ============= */
 
     const sortMessagesByDays = () => {
@@ -195,8 +197,14 @@ export const ChatLayuot = () => {
                     <Content>
                         <div className={styles.content}>
                             <div className={styles.chatSpace} ref={refDivMessagesSpace}>
-                                {!messages ? (
-                                    <div>123</div>
+                                {!messages.length ? (
+                                    <div className={styles.emptySpace}>
+                                        <img
+                                            src="https://beechat.ru/imgs/messengerIcon/empty_messages.png"
+                                            alt="empty"
+                                        />
+                                        <p>Выберите контакт, чтобы увидеть сообщения</p>
+                                    </div>
                                 ) : !isLoading ? (
                                     sortMessagesByDays().map((el, index) => {
                                         if (el.type === 'date') {
@@ -245,22 +253,24 @@ export const ChatLayuot = () => {
                                 )} */}
                             </div>
 
-                            <div className={styles.inputHolder}>
-                                <TextArea
-                                    disabled={currentContact ? false : true}
-                                    value={text}
-                                    className={styles.textArea}
-                                    onChange={(e) => {
-                                        setText((pred) => e.target.value);
-                                    }}
-                                    onKeyDown={(e) => handlerPressEnter(e)}
-                                    placeholder="написать сообщение"
-                                    autoSize={{ minRows: 4, maxRows: 6 }}
-                                />
-                                <button disabled={!currentContact} onClick={sendMessage}>
-                                    Отправить
-                                </button>
-                            </div>
+                            {!messages.length ? null : (
+                                <div className={styles.inputHolder}>
+                                    <TextArea
+                                        disabled={currentContact ? false : true}
+                                        value={text}
+                                        className={styles.textArea}
+                                        onChange={(e) => {
+                                            setText((pred) => e.target.value);
+                                        }}
+                                        onKeyDown={(e) => handlerPressEnter(e)}
+                                        placeholder="написать сообщение"
+                                        autoSize={{ minRows: 4, maxRows: 6 }}
+                                    />
+                                    <button disabled={!currentContact} onClick={sendMessage}>
+                                        Отправить
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </Content>
                     {currentContact !== null ? (
